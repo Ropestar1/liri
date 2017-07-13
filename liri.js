@@ -2,7 +2,7 @@ var keyFile = require('./keys.js');
 var Spotify = require('node-spotify-api');
 var Twitter = require('twitter');
 var request = require('request');
-var fs = require("fs");
+var fs = require('fs');
 
 var client = new Twitter({
 	consumer_key: keyFile.twitterKeys.consumer_key,
@@ -27,8 +27,10 @@ function myTweets(numberTweets) {
 			// console.log('Date Tweeted', tweets[0].created_at);
 			// console.log('Tweet', tweets[0].text);
 			for (var i = 0; i < numberTweets; i++) {
-				console.log('\nDate Created: ', tweets[i].created_at);
+				console.log('\nTweet Number: ' + (i+1));
+				console.log('Date Created: ', tweets[i].created_at);
 				console.log('Tweet: ', tweets[i].text);
+				console.log('----------------------------')
 			}
 	 	}
 	 	else if (error) {
@@ -38,33 +40,64 @@ function myTweets(numberTweets) {
 }
 
 function spotifySong(limitNumber){
-	limitNumber = 1;
-	if (songOrMovie === undefined){
+	limitNumber = 10;
+	if (songOrMovie == undefined){
 		songOrMovie = 'The Sign';
 	}
 	
 	spotify.search({ type: 'track', query: songOrMovie, limit: limitNumber }, function(err, data) {
+
 		var artist = data.tracks.items[0].artists[0].name;
 		var spotifyTitle = data.tracks.items[0].name;
 		var previewLink = data.tracks.items[0].preview_url;
 		var albumName = data.tracks.items[0].album.name;
+
+		function songDisplay() {
+			// console.log(JSON.stringify(data, null, 2));
+			console.log('Artist(s): ', artist);
+			console.log('Song Title: ', spotifyTitle);
+			console.log('Preview Link: ', previewLink);
+			console.log('Album: ', albumName);
+			console.log('----------------------------')
+		}
 
 		if (err) {
 			return console.log('Error occurred: ' + err);
 		}
 
 		else {
-			// console.log(JSON.stringify(data, null, 2));
-			console.log('\nArtist(s): ', artist);
-			console.log('\nSong Title: ', spotifyTitle);
-			console.log('\nPreview Link: ', previewLink);
-			console.log('\nAlbum: ', albumName)
+			if (songOrMovie === 'The Sign') {
+				for (var i = 0; i < Object.keys(data.tracks.items).length; i++) {
+					if (data.tracks.items[i].artists[0].name === 'Ace of Base') {
+						// console.log('\nSearch Item Number: ' + (i+1));
+						artist = data.tracks.items[i].artists[0].name;
+						spotifyTitle = data.tracks.items[i].name;
+						previewLink = data.tracks.items[i].preview_url;
+						albumName = data.tracks.items[i].album.name;
+						songDisplay();
+						i = limitNumber
+					}
+				}				
+			}
+			
+			else {// console.log(Object.keys(data.tracks.items));
+				for (var i = 0; i < Object.keys(data.tracks.items).length; i++) {
+					console.log('\nSearch Item Number: ' + (i+1));
+					console.log('artist', artist);
+					artist = data.tracks.items[i].artists[0].name;
+					spotifyTitle = data.tracks.items[i].name;
+					previewLink = data.tracks.items[i].preview_url;
+					albumName = data.tracks.items[i].album.name;
+
+					songDisplay();
+				}
+			}
 		}
 	});
 }
 
 function movieCheck() {
-	if (songOrMovie === undefined) {
+	if (songOrMovie == undefined) {
 		songOrMovie = 'Mr. Nobody';
 	}
 
@@ -104,6 +137,26 @@ function doSays() {
 	coreCode();
 	});
 }
+
+// function writeMyData(fd) {
+
+// }
+
+
+// function sendToLog() {
+// 	fs.open('myfile', 'wx', (err, fd) => {
+// 		if (err) {
+// 	    	if (err.code === 'EEXIST') {
+// 	      		console.error('myfile already exists');
+// 	      	return;
+// 	    	}
+
+// 	    throw err;
+// 		}
+
+// 	writeMyData(fd);
+// 	});
+// }
 
 //node.js commands
 function coreCode() {
