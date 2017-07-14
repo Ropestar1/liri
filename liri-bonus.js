@@ -24,10 +24,30 @@ function myTweets(numberTweets) {
 	client.get('statuses/user_timeline', params, function(error, tweets, response) {
 		if (!error) {
 			for (var i = 0; i < numberTweets; i++) {
-				console.log('\nTweet Number: ' + (i+1));
-				console.log('Date Created: ', tweets[i].created_at);
-				console.log('Tweet: ', tweets[i].text);
-				console.log('----------------------------')
+				var tweetNumber = '\nTweet Number: ' + (i+1);
+				var dateCreated = 'Date Created: ' + tweets[i].created_at;
+				var tweetContent = 'Tweet: ' + tweets[i].text;
+				var lines = '----------------------------';
+
+				fs.appendFile('log.txt', tweetNumber, (err) => {
+				  if (err) throw err;
+				  	console.log(tweetNumber);
+				});
+
+				fs.appendFile('log.txt', '\n' + dateCreated, (err) => {
+				  if (err) throw err;
+				  	console.log(dateCreated);
+				});
+
+				fs.appendFile('log.txt', '\n' + tweetContent, (err) => {
+				  if (err) throw err;
+				  	console.log(tweetContent);
+				});
+
+				fs.appendFile('log.txt', '\n' + lines, (err) => {
+				  if (err) throw err;
+				  	console.log(lines);
+				});
 			}
 	 	}
 	 	else if (error) {
@@ -44,24 +64,10 @@ function spotifySong(limitNumber){
 	
 	spotify.search({ type: 'track', query: songOrMovie, limit: limitNumber }, function(err, data) {
 
-		var artist = data.tracks.items[0].artists[0].name;
-		var spotifyTitle = data.tracks.items[0].name;
-		var previewLink = data.tracks.items[0].preview_url;
-		var albumName = data.tracks.items[0].album.name;
-
-		function songDisplay() {
-			artist = data.tracks.items[i].artists[0].name;
-			spotifyTitle = data.tracks.items[i].name;
-			previewLink = data.tracks.items[i].preview_url;
-			albumName = data.tracks.items[i].album.name;
-			// console.log(JSON.stringify(data, null, 2));
-
-			console.log('Artist(s): ', artist);
-			console.log('Song Title: ', spotifyTitle);
-			console.log('Preview Link: ', previewLink);
-			console.log('Album: ', albumName);
-			console.log('----------------------------')
-		}
+		// var artist = data.tracks.items[0].artists[0].name;
+		// var spotifyTitle = data.tracks.items[0].name;
+		// var previewLink = data.tracks.items[0].preview_url;
+		// var albumName = data.tracks.items[0].album.name;
 
 		if (err) {
 			return console.log('Error occurred: ' + err);
@@ -70,16 +76,89 @@ function spotifySong(limitNumber){
 		else {
 			if (songOrMovie === 'The Sign') {
 				for (var i = 0; i < Object.keys(data.tracks.items).length; i++) {
+					var lineStart = '\nSearch Item Number: ' + (i+1);
+					var artist = 'Artist(s): ' + data.tracks.items[i].artists[0].name;
+					var spotifyTitle = 'Song Title: ' + data.tracks.items[i].name;
+					var previewLink = 'Preview Link: ' + data.tracks.items[i].preview_url;
+					var albumName = data.tracks.items[i].album.name;
+					var lines = '---------------------------';
+
+					function singleSongDisplay() {
+						fs.appendFile('log.txt', '\n' + artist, (err) => {
+							if (err) throw err;
+							console.log(artist);
+						});
+
+						fs.appendFile('log.txt', '\n' + spotifyTitle, (err) => {
+							if (err) throw err;
+							console.log(spotifyTitle);
+						});
+
+						fs.appendFile('log.txt', '\n' + previewLink, (err) => {
+							if (err) throw err;
+							console.log(previewLink);
+						});
+
+						fs.appendFile('log.txt', '\n' + albumName, (err) => {
+							if (err) throw err;
+							console.log(albumName);
+						});
+
+						fs.appendFile('log.txt', '\n' + lines, (err) => {
+							if (err) throw err;
+							console.log(lines);
+						});
+
+					}
+
 					if (data.tracks.items[i].artists[0].name === 'Ace of Base') {
-						songDisplay();
+						singleSongDisplay();
 						i = limitNumber
 					}
-				}				
+				}			
 			}
 			
-			else {// console.log(Object.keys(data.tracks.items));
+			else {
 				for (var i = 0; i < Object.keys(data.tracks.items).length; i++) {
-					console.log('\nSearch Item Number: ' + (i+1));
+					var lineStart = '\nSearch Item Number: ' + (i+1);
+					var artist = 'Artist(s): ' + data.tracks.items[i].artists[0].name;
+					var spotifyTitle = 'Song Title: ' + data.tracks.items[i].name;
+					var previewLink = 'Preview Link: ' + data.tracks.items[i].preview_url;
+					var albumName = data.tracks.items[i].album.name;
+					var lines = '---------------------------';
+
+					function songDisplay() {
+						fs.appendFile('log.txt', '\n' + lineStart, (err) => {
+							if (err) throw err;
+							console.log(lineStart);
+						});
+
+						fs.appendFile('log.txt', '\n' + artist, (err) => {
+							if (err) throw err;
+							console.log(artist);
+						});
+
+						fs.appendFile('log.txt', '\n' + spotifyTitle, (err) => {
+							if (err) throw err;
+							console.log(spotifyTitle);
+						});
+
+						fs.appendFile('log.txt', '\n' + previewLink, (err) => {
+							if (err) throw err;
+							console.log(previewLink);
+						});
+
+						fs.appendFile('log.txt', '\n' + albumName, (err) => {
+							if (err) throw err;
+							console.log(albumName);
+						});
+
+						fs.appendFile('log.txt', '\n' + lines, (err) => {
+							if (err) throw err;
+							console.log(lines);
+						});
+					}
+
 					songDisplay();
 				}
 			}
@@ -93,20 +172,64 @@ function movieCheck() {
 	}
 
 	var queryUrl = 'http://www.omdbapi.com/?t=' + songOrMovie + '&y=&plot=short&apikey=40e9cece';
-	// console.log(queryUrl);
 
 	request(queryUrl, function(error, response, body) {
 		if (!error && response.statusCode === 200) {
 			var bodyPath = JSON.parse(body);
-			// console.log(JSON.parse(body));
-			console.log('\nMove Title: ' + bodyPath.Title)
-			console.log('\nRelease Year: ' + bodyPath.Year);
-			console.log('\nIMDB Rating: ' + bodyPath.imdbRating);
-			console.log('\nRotten Tomatoes Rating: ' + bodyPath.Ratings[1].Value); //check this
-			console.log('\nCountry: ' + bodyPath.Country);
-			console.log('\nLanguage: ' + bodyPath.Language);
-			console.log('\nPlot: ' + bodyPath.Plot);
-			console.log('\nActors: ' + bodyPath.Actors)
+			var titleDisplay = '\nMovie Title: ' + bodyPath.Title;
+			var releaseYear = '\nRelease Year: ' + bodyPath.Year;
+			var imdbRatingVar = '\nIMDB Rating: ' + bodyPath.imdbRating;
+			var rottenRating = '\nRotten Tomatoes Rating: ' + bodyPath.Ratings[1].Value;
+			var country = '\nCountry: ' + bodyPath.Country;
+			var language = '\nLanguage: ' + bodyPath.Language;
+			var plot = '\nPlot: ' + bodyPath.Plot;
+			var actors = '\nActors: ' + bodyPath.Actors;
+			var lines = '---------------------------';
+			
+			fs.appendFile('log.txt', '\n' + titleDisplay, (err) => {
+				if (err) throw err;
+				console.log(titleDisplay);
+			});
+
+			fs.appendFile('log.txt', '\n' + releaseYear, (err) => {
+				if (err) throw err;
+				console.log(releaseYear);
+			});
+
+			fs.appendFile('log.txt', '\n' + imdbRatingVar, (err) => {
+				if (err) throw err;
+				console.log(imdbRatingVar);
+			});
+
+			fs.appendFile('log.txt', '\n' + rottenRating, (err) => {
+				if (err) throw err;
+				console.log(rottenRating);
+			});
+
+			fs.appendFile('log.txt', '\n' + country, (err) => {
+				if (err) throw err;
+				console.log(country);
+			});
+
+			fs.appendFile('log.txt', '\n' + language, (err) => {
+				if (err) throw err;
+				console.log(language);
+			});
+
+			fs.appendFile('log.txt', '\n' + plot, (err) => {
+				if (err) throw err;
+				console.log(plot);
+			});
+
+			fs.appendFile('log.txt', '\n' + actors, (err) => {
+				if (err) throw err;
+				console.log(actors);
+			});
+
+			fs.appendFile('log.txt', '\n' + lines, (err) => {
+				if (err) throw err;
+				console.log(lines);
+			});
 		}
 	});
 }
@@ -128,7 +251,6 @@ function doSays() {
 	coreCode();
 	});
 }
-
 
 //node.js commands
 function coreCode() {
