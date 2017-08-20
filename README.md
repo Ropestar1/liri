@@ -20,7 +20,7 @@ In the command line, type in 'node liri.js my-tweets' to display the last 20 twe
 ![Alt Text](https://github.com/Ropestar1/liri-node-app/blob/master/ReadME-Material/LIRI-my-tweets.gif)
 
 ##### Spotify:
-In the command line, type in 'node liri.js spotify-this-song [insert song title here]' to display 10 relevant results of your requested song.
+In the command line, type in 'node liri.js spotify-this-song [insert song title here]' to display 10 relevant results of your requested song. If no song is entered, it defaults to 'Ace of Bass'
 
 ![Alt Text](https://github.com/Ropestar1/liri-node-app/blob/master/ReadME-Material/LIRI-spotify.gif)
 
